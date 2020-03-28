@@ -6,6 +6,10 @@ const parseQueryString = (query: string): IParseQueryString => {
   let queryString = query;
   const queryObject = {};
 
+  if (!queryString) {
+    return;
+  }
+
   if (queryString.indexOf('?') === 0) {
     queryString = queryString.slice(1);
   }

@@ -6,11 +6,13 @@ import {
 import {
   parse,
 } from 'url';
+import bodyParser from 'body-parser';
 
 import rest, { IRest } from './rest/rest';
-import getRoutes from './routes/getRoutes';
-import bodyParser from 'body-parser';
 import parseQueryString from './functions/parseQueryString';
+
+import getRoutes from './routes/getRoutes';
+import postRoutes from './routes/postRoutes';
 
 const app = express();
 const port = 3000;
@@ -21,6 +23,7 @@ interface INonGetIncomingMessage extends IncomingMessage {
 }
 
 getRoutes(restApp);
+postRoutes(restApp);
 
 app
   // we have to handle variables outside ot url parameters
@@ -32,7 +35,7 @@ app
     const slug = pathname.slice(1);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('get', slug, req.body));
-    res.end;
+    res.end();
   })
   .get('*', (req: IncomingMessage, res: ServerResponse) => {
     const parsedUrl = parse(req.url);
@@ -40,7 +43,7 @@ app
     const slug = pathname.slice(1);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('get', slug, parseQueryString(query)));
-    res.end;
+    res.end();
   })
   .patch('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     const parsedUrl = parse(req.url, true);
@@ -48,15 +51,18 @@ app
     const slug = pathname.slice(1);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('patch', slug, req.body));
-    res.end;
+    res.end();
   })
   .post('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     const parsedUrl = parse(req.url, true);
     const { pathname } = parsedUrl;
     const slug = pathname.slice(1);
+
+    console.log('Server Render-Test: ', restApp.render('post', slug, req.body));
+
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('post', slug, req.body));
-    res.end;
+    res.end();
   })
   .put('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     const parsedUrl = parse(req.url, true);
@@ -64,11 +70,11 @@ app
     const slug = pathname.slice(1);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('put', slug, req.body));
-    res.end;
+    res.end();
   })
   .options('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     res.writeHead(200);
-    res.end;
+    res.end();
   })
   .listen(port, (error) => {
     if (error) {

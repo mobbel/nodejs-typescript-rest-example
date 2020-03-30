@@ -34,7 +34,7 @@ app
     const { pathname } = parsedUrl;
     const slug = pathname.slice(1);
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('get', slug, req.body));
+    res.write(restApp.render('delete', slug, req.body));
     res.end();
   })
   .get('*', (req: IncomingMessage, res: ServerResponse) => {
@@ -57,9 +57,6 @@ app
     const parsedUrl = parse(req.url, true);
     const { pathname } = parsedUrl;
     const slug = pathname.slice(1);
-
-    console.log('Server Render-Test: ', restApp.render('post', slug, req.body));
-
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(restApp.render('post', slug, req.body));
     res.end();

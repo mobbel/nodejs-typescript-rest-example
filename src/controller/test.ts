@@ -1,19 +1,24 @@
-import { IRequestBody } from '../rest/rest';
+import {
+  ICallbackProperties,
+} from '../rest/rest';
 
 const test = () => {
   const testData = () => {
     return (JSON.stringify({ test: 'data' }));
   };
 
-  const testPostData = (requestBody: IRequestBody) => {
-    console.log('Controller requestBody: ', requestBody);
+  const testPostData = (properties: ICallbackProperties) => {
+    return (JSON.stringify({ postData: properties.requestBody }));
+  };
 
-    return (JSON.stringify({ postData: requestBody }));
+  const testSlugData = (properties: ICallbackProperties) => {
+    return (JSON.stringify({ slugData: properties.slugVariables }));
   };
 
   return {
     testData,
     testPostData,
+    testSlugData,
   };
 };
 

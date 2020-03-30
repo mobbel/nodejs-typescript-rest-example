@@ -1,6 +1,5 @@
 export interface IRest {
-  get: (slug: string, callback) => void;
-  post: (slug: string, callback) => void;
+  addCallback: (method: string, slug: string, callback) => void;
   render: (method: string, slug: string, requestBody: IRequestBody) => string;
 }
 
@@ -8,27 +7,83 @@ export interface IRequestBody {
   [key: string]: string;
 }
 
+export interface IRegexObject {
+  regex: string;
+  regexNames: string[];
+  callback: (properties: ICallbackProperties) => string;
+}
+
+export interface ICallbackProperties {
+  requestBody?: IRequestBody;
+  slugVariables?: { [key: string]: string };
+}
+
+interface IVariablesFromSlug {
+  [key: string]: string;
+}
+
 const rest = (): IRest => {
   const callbackHolder = {
+    delete: [],
     get: [],
+    patch: [],
     post: [],
+    put: [],
   };
-  const get = (slug: string, callback): void => {
-    callbackHolder.get[slug] = callback;
+  const regexCallbackHolder = {
+    delete: [],
+    get: [],
+    patch: [],
+    post: [],
+    put: [],
   };
-  const post = (slug: string, callback): void => {
-    callbackHolder.post[slug] = callback;
+  const addCallback = (method: string, slug: string, callback): void => {
+    if (slug.indexOf('/:') < 0) {
+      callbackHolder[method][slug] = callback;
+    } else {
+      const slugTempArray = [];
+      const regexNames = [];
+      const slugArray = slug.split('/');
+      slugArray.map((slugToTest) => {
+        if (slugToTest[0] !== ':') {
+          slugTempArray.push(slugToTest);
+        } else {
+          slugTempArray.push('([a-z0-9]*)');
+          regexNames.push(slugToTest.slice(1));
+        }
+      });
+      const regexObject: IRegexObject = {
+        callback,
+        regexNames,
+        regex: `${slugTempArray.join('\/')}`,
+      };
+      regexCallbackHolder[method].push(regexObject);
+    }
   };
 
   const render = (method: string, slug: string, requestBody: IRequestBody) => {
-    console.log('requestBody: ', requestBody);
+    if (callbackHolder[method][slug]) {
+      return callbackHolder[method][slug]({ requestBody });
+    }
+    let returnCode;
+    regexCallbackHolder[method].map((methodRegex: IRegexObject) => {
+      const matches = slug.match(methodRegex.regex);
 
-    return callbackHolder[method][slug](requestBody);
+      if (matches && matches.length > 0) {
+        const variablesFromSlug: IVariablesFromSlug = {};
+        methodRegex.regexNames.map((regexName: string, index: number) => {
+          variablesFromSlug[regexName] = matches[index + 1];
+        });
+        returnCode = (methodRegex.callback)({ requestBody, slugVariables: variablesFromSlug });
+      }
+    });
+
+    return (returnCode);
+    // return '{\"Not\":\"Implemented\"}';
   };
 
   return {
-    get,
-    post,
+    addCallback,
     render,
   };
 };

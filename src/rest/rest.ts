@@ -5,7 +5,12 @@ import auth from './auth';
 
 export interface IRest {
   addCallback: (method: string, slug: string, callback, guarded?: boolean) => void;
-  render: (method: string, slug: string, requestBody: IRequestBody, headers: IncomingHttpHeaders) => IResponse;
+  render: (
+    method: string,
+    slug: string,
+    requestBody: IRequestBody,
+    headers: IncomingHttpHeaders,
+  ) => IResponse;
 }
 
 interface IResponseHeader {

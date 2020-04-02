@@ -25,49 +25,35 @@ interface INonGetIncomingMessage extends IncomingMessage {
 getRoutes(restApp);
 postRoutes(restApp);
 
+const handle = (type: string, req: INonGetIncomingMessage, res: ServerResponse) => {
+  const parsedUrl = parse(req.url, (type === 'get' ? false : true));
+  const { pathname } = parsedUrl;
+  const properties = type === 'get' ? parseQueryString((parsedUrl.query as string)) : req.body;
+  const slug = pathname.slice(1);
+  const response = restApp.render(type, slug, properties);
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.write(response);
+  res.end();
+};
+
 app
   // we have to handle variables outside ot url parameters
   .use(bodyParser.urlencoded({ extended: false }))
   .use(bodyParser.json())
   .delete('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
-    const parsedUrl = parse(req.url, true);
-    const { pathname } = parsedUrl;
-    const slug = pathname.slice(1);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('delete', slug, req.body));
-    res.end();
+    handle('delete', req, res);
   })
   .get('*', (req: IncomingMessage, res: ServerResponse) => {
-    const parsedUrl = parse(req.url);
-    const { pathname, query } = parsedUrl;
-    const slug = pathname.slice(1);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('get', slug, parseQueryString(query)));
-    res.end();
+    handle('get', req, res);
   })
   .patch('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
-    const parsedUrl = parse(req.url, true);
-    const { pathname } = parsedUrl;
-    const slug = pathname.slice(1);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('patch', slug, req.body));
-    res.end();
+    handle('patch', req, res);
   })
   .post('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
-    const parsedUrl = parse(req.url, true);
-    const { pathname } = parsedUrl;
-    const slug = pathname.slice(1);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('post', slug, req.body));
-    res.end();
+    handle('post', req, res);
   })
   .put('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
-    const parsedUrl = parse(req.url, true);
-    const { pathname } = parsedUrl;
-    const slug = pathname.slice(1);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(restApp.render('put', slug, req.body));
-    res.end();
+    handle('put', req, res);
   })
   .options('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     res.writeHead(200);

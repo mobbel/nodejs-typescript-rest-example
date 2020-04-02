@@ -62,10 +62,10 @@ const rest = (): IRest => {
   };
 
   const render = (method: string, slug: string, requestBody: IRequestBody) => {
-    if (callbackHolder[method][slug]) {
-      return callbackHolder[method][slug]({ requestBody });
-    }
     let returnCode;
+    if (callbackHolder[method][slug]) {
+      returnCode = callbackHolder[method][slug]({ requestBody });
+    }
     regexCallbackHolder[method].map((methodRegex: IRegexObject) => {
       const matches = slug.match(methodRegex.regex);
 
@@ -79,7 +79,6 @@ const rest = (): IRest => {
     });
 
     return (returnCode);
-    // return '{\"Not\":\"Implemented\"}';
   };
 
   return {

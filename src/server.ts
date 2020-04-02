@@ -30,9 +30,16 @@ const handle = (type: string, req: INonGetIncomingMessage, res: ServerResponse) 
   const { pathname } = parsedUrl;
   const properties = type === 'get' ? parseQueryString((parsedUrl.query as string)) : req.body;
   const slug = pathname.slice(1);
-  const response: IResponse = restApp.render(type, slug, properties);
+  const response: IResponse = restApp.render(type, slug, properties, req.headers);
+  if (response.headers && response.headers.length > 0) {
+    response.headers.map((header) => {
+      res.setHeader(header.headerKey, header.headerValue);
+    });
+  }
   res.writeHead(response.status, { 'Content-Type': response.contentType });
-  res.write(response.body);
+  if (response.body) {
+    res.write(response.body);
+  }
   res.end();
 };
 

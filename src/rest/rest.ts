@@ -1,6 +1,12 @@
 export interface IRest {
   addCallback: (method: string, slug: string, callback) => void;
-  render: (method: string, slug: string, requestBody: IRequestBody) => string;
+  render: (method: string, slug: string, requestBody: IRequestBody) => IResponse;
+}
+
+export interface IResponse {
+  status: number;
+  contentType: string;
+  body: string;
 }
 
 export interface IRequestBody {
@@ -10,7 +16,7 @@ export interface IRequestBody {
 export interface IRegexObject {
   regex: string;
   regexNames: string[];
-  callback: (properties: ICallbackProperties) => string;
+  callback: (properties: ICallbackProperties) => IResponse;
 }
 
 export interface ICallbackProperties {

@@ -1,11 +1,11 @@
-import { IRest, ICallbackProperties } from '../rest/rest';
+import { IRest, ICallbackProperties, IResponse } from '../rest/rest';
 import test from '../controller/test';
 
 const getRoutes = (rest: IRest) => {
-  rest.addCallback('get', 'test', () => {
+  rest.addCallback('get', 'test', (): IResponse => {
     return test().testData();
   });
-  rest.addCallback('get', 'test/:id', (properties: ICallbackProperties) => {
+  rest.addCallback('get', 'test/:id', (properties: ICallbackProperties): IResponse => {
     return test().testSlugData(properties);
   });
 };

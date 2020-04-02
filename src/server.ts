@@ -8,7 +8,7 @@ import {
 } from 'url';
 import bodyParser from 'body-parser';
 
-import rest, { IRest } from './rest/rest';
+import rest, { IRest, IResponse } from './rest/rest';
 import parseQueryString from './functions/parseQueryString';
 
 import getRoutes from './routes/getRoutes';
@@ -30,9 +30,9 @@ const handle = (type: string, req: INonGetIncomingMessage, res: ServerResponse) 
   const { pathname } = parsedUrl;
   const properties = type === 'get' ? parseQueryString((parsedUrl.query as string)) : req.body;
   const slug = pathname.slice(1);
-  const response = restApp.render(type, slug, properties);
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write(response);
+  const response: IResponse = restApp.render(type, slug, properties);
+  res.writeHead(response.status, { 'Content-Type': response.contentType });
+  res.write(response.body);
   res.end();
 };
 

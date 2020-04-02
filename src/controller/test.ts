@@ -1,18 +1,30 @@
 import {
-  ICallbackProperties,
+  ICallbackProperties, IResponse,
 } from '../rest/rest';
 
 const test = () => {
-  const testData = () => {
-    return (JSON.stringify({ test: 'data' }));
+  const testData = (): IResponse => {
+    return ({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ test: 'data' }),
+    });
   };
 
-  const testPostData = (properties: ICallbackProperties) => {
-    return (JSON.stringify({ postData: properties.requestBody }));
+  const testPostData = (properties: ICallbackProperties): IResponse => {
+    return ({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ postData: properties.requestBody }),
+    });
   };
 
-  const testSlugData = (properties: ICallbackProperties) => {
-    return (JSON.stringify({ slugData: properties.slugVariables }));
+  const testSlugData = (properties: ICallbackProperties): IResponse => {
+    return ({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ slugData: properties.slugVariables }),
+    });
   };
 
   return {

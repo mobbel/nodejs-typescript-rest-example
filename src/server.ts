@@ -1,11 +1,13 @@
-import express from 'express';
-import {
+import http, {
   IncomingMessage,
   ServerResponse,
 } from 'http';
+import https from 'https';
 import {
   parse,
 } from 'url';
+import fs from 'fs';
+import express from 'express';
 import bodyParser from 'body-parser';
 
 import rest, { IRest, IResponse } from './rest/rest';
@@ -16,6 +18,7 @@ import postRoutes from './routes/postRoutes';
 
 const app = express();
 const port = 3000;
+const sslPort = 3030;
 const restApp: IRest = rest();
 
 interface INonGetIncomingMessage extends IncomingMessage {
@@ -65,11 +68,19 @@ app
   .options('*', (req: INonGetIncomingMessage, res: ServerResponse) => {
     res.writeHead(200);
     res.end();
-  })
-  .listen(port, (error) => {
-    if (error) {
-      throw error;
-    }
+  });
 
+http.createServer(app)
+  .listen(port, () => {
     console.log('Server listen on Port: ', port);
+  });
+
+// now we use https instead of http
+https.createServer({
+  key: fs.readFileSync(`${__dirname}/../ssl_key/key.pem`),
+  cert: fs.readFileSync(`${__dirname}/../ssl_key/cert.pem`),
+  passphrase: '',
+},                 app)
+  .listen(sslPort, () => {
+    console.log('SSL-Server listen on Port: ', sslPort);
   });

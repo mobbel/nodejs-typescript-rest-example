@@ -2,12 +2,12 @@ interface IParseQueryString {
   [key: string]: string;
 }
 
-const parseQueryString = (query: string): IParseQueryString => {
+const parseQueryString = (query: string = null): IParseQueryString => {
   let queryString = query;
   const queryObject = {};
 
   if (!queryString) {
-    return;
+    return queryObject;
   }
 
   if (queryString.indexOf('?') === 0) {

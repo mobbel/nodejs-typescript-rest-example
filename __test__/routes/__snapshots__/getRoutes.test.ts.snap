@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`>>> Testing Get-Routes +++ Snapshot of /test route 1`] = `
+Object {
+  "body": "{\\"test\\":\\"data\\"}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`>>> Testing Get-Routes +++ Snapshot of /test/:id route 1`] = `
+Object {
+  "body": "{\\"slugData\\":{\\"id\\":\\"12345\\"}}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`>>> Testing Get-Routes +++ Snapshot of /test/guarded fail 1`] = `
+Object {
+  "contentType": "Unauthorized",
+  "headers": Array [
+    Object {
+      "headerKey": "www-authorization",
+      "headerValue": "missing login status",
+    },
+  ],
+  "status": 401,
+}
+`;
+
+exports[`>>> Testing Get-Routes +++ Snapshot of /test/guarded work 1`] = `
+Object {
+  "body": "{\\"test\\":\\"data\\"}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`>>> Testing Post-Routes +++ Snapshot of /test with body-content 1`] = `
+Object {
+  "body": "{\\"postData\\":{\\"test\\":\\"data\\"}}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;
+
+exports[`>>> Testing Post-Routes +++ Snapshot of /test without body-content 1`] = `
+Object {
+  "body": "{\\"postData\\":{}}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;

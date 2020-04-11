@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`>>> Testing Rest-Module +++ Creating a Snapshot 1`] = `
+Object {
+  "body": "{\\"test\\":\\"data\\"}",
+  "contentType": "application/json",
+  "status": 200,
+}
+`;

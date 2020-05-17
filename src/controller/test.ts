@@ -1,9 +1,34 @@
+import mysql from 'mysql';
+
 import {
   ICallbackProperties, IResponse,
 } from '../rest/rest';
+import mysqlConfig from '../config/mysqlConfig';
+import mysqlPromise from '../functions/mysqlPromise';
+
+const mySQLPromise = mysqlPromise();
 
 const test = () => {
-  const testData = (): IResponse => {
+  const testData = async (): Promise<IResponse> => {
+    const connection = mysql.createConnection(mysqlConfig);
+
+    const queryPromise = await mySQLPromise.getData({
+      connection,
+      queryString: 'SELECT id FROM idTable',
+    });
+
+    const mapedData = queryPromise.then((results) => {
+      const data: [] = results.map((row) => {
+        return (row.id);
+      });
+
+      return data;
+    }).catch((error) => {
+      console.log(error);
+    });
+
+    console.log(mapedData);
+
     return ({
       status: 200,
       contentType: 'application/json',
